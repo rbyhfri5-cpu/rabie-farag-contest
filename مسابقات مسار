@@ -1,0 +1,117 @@
+index.html
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مسابقات مستر ربيع فرج</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Tahoma,Arial;background:linear-gradient(135deg,#101b46,#284e91);color:#fff;text-align:center;min-height:100vh;padding:20px}
+.container{max-width:650px;margin:25px auto;background:#fff;color:#172554;border-radius:22px;padding:25px;box-shadow:0 10px 35px #0005}
+h1{color:#f59e0b;margin:8px}
+h2{color:#1d4ed8}
+input,button{font:inherit;border-radius:12px;padding:13px;margin:7px;border:0}
+input{border:2px solid #cbd5e1;width:80%;max-width:300px}
+button{background:#f59e0b;color:#172554;font-weight:bold;cursor:pointer}
+button:hover{filter:brightness(1.08)}
+.primary{background:#2563eb;color:white}
+.question{font-size:36px;font-weight:bold;margin:25px}
+#answer{font-size:25px;text-align:center;width:150px}
+.info{display:flex;justify-content:space-around;gap:10px;flex-wrap:wrap;font-weight:bold}
+.info span{background:#e0e7ff;padding:12px;border-radius:12px}
+.hidden{display:none}
+#feedback{font-size:20px;font-weight:bold;min-height:30px}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🏆 مستر ربيع فرج 🏆</h1>
+<h2>مسابقة جدول الضرب</h2>
+<p>استعد للتحدي وأثبت شطارتك!</p>
+
+<div id="start">
+<input id="student" placeholder="اكتب اسم الطالب">
+<br>
+<button class="primary" onclick="startGame()">ابدأ المسابقة 🚀</button>
+</div>
+
+<div id="game" class="hidden">
+<div class="info">
+<span>⭐ النقاط: <b id="score">0</b></span>
+<span>⏱️ الوقت: <b id="time">60</b></span>
+<span>❓ السؤال: <b id="number">1</b>/10</span>
+</div>
+<div class="question" id="question">5 × 6 = ؟</div>
+<input id="answer" type="number" placeholder="الإجابة">
+<br>
+<button class="primary" onclick="checkAnswer()">تأكيد الإجابة</button>
+<p id="feedback"></p>
+</div>
+
+<div id="result" class="hidden">
+<h2>🎉 انتهت المسابقة!</h2>
+<h3 id="welcome"></h3>
+<div style="font-size:28px">نتيجتك: <b id="finalScore">0</b> من 10</div>
+<p id="message"></p>
+<button onclick="location.reload()">إعادة المسابقة 🔄</button>
+</div>
+</div>
+
+<script>
+let a,b,score=0,count=0,time=60,timer;
+function startGame(){
+ const name=document.getElementById('student').value.trim();
+ if(!name){alert('اكتب اسمك الأول!');return;}
+ document.getElementById('start').classList.add('hidden');
+ document.getElementById('game').classList.remove('hidden');
+ nextQuestion();
+ timer=setInterval(()=>{
+  time--;
+  document.getElementById('time').textContent=time;
+  if(time<=0) endGame();
+ },1000);
+}
+function nextQuestion(){
+ if(count>=10){endGame();return;}
+ count++;
+ a=Math.floor(Math.random()*12)+1;
+ b=Math.floor(Math.random()*12)+1;
+ document.getElementById('question').textContent=a+' × '+b+' = ؟';
+ document.getElementById('number').textContent=count;
+ document.getElementById('answer').value='';
+ document.getElementById('answer').focus();
+}
+function checkAnswer(){
+ if(document.getElementById('game').classList.contains('hidden'))return;
+ const val=document.getElementById('answer').value;
+ if(val===''){alert('اكتب الإجابة!');return;}
+ if(Number(val)===a*b){
+  score++;
+  document.getElementById('feedback').textContent='إجابة صحيحة! أحسنت 🌟';
+  document.getElementById('feedback').style.color='green';
+ }else{
+  document.getElementById('feedback').textContent='للأسف إجابة غير صحيحة. الناتج '+(a*b);
+  document.getElementById('feedback').style.color='red';
+ }
+ document.getElementById('score').textContent=score;
+ setTimeout(nextQuestion,800);
+}
+function endGame(){
+ clearInterval(timer);
+ document.getElementById('game').classList.add('hidden');
+ document.getElementById('result').classList.remove('hidden');
+ document.getElementById('welcome').textContent='برافو يا '+document.getElementById('student').value;
+ document.getElementById('finalScore').textContent=score;
+ document.getElementById('message').textContent=
+ score>=9?'ممتاز! بطل في جدول الضرب 🏆':
+ score>=6?'أحسنت! استمر في التدريب 👏':
+ 'حاول مرة أخرى وستصبح أفضل 💪';
+}
+document.getElementById('answer').addEventListener('keydown',e=>{
+ if(e.key==='Enter')checkAnswer();
+});
+</script>
+</body>
+</html>
